@@ -1,3 +1,10 @@
 [submodule "my-blog/themes/hugo-theme-next"]
 	path = my-blog/themes/hugo-theme-next
 	url = https://github.com/hugo-next/hugo-theme-next.git
+[submodule "jesse-blog/themes/hugo-theme-stack"]
+	path = jesse-blog/themes/hugo-theme-stack
+	url = https://github.com/CaiJimmy/hugo-theme-stack.git
+[submodule "jesse-blog/public"]
+	path = jesse-blog/public
+	url = git@github.com:JiashuaiXu/JiashuaiXu.github.io.git
+	branch = main
