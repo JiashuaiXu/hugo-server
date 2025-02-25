@@ -1,0 +1,25 @@
+baseURL = "https://JiashuaiXu.github.io/"
+languageCode = "en-us"
+title = "Jesse's Blog"
+theme = "hugo-theme-stack"
+
+[params]
+  defaultTheme = "auto"  # 主题模式：light, dark, auto
+  title = "Jesse's Blog"
+  description = "A personal blog built with Hugo and Stack theme"
+
+[menu]
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 2
+
+[markup]
+  [markup.highlight]
+    style = "dracula"
+
