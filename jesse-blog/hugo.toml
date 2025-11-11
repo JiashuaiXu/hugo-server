@@ -21,6 +21,8 @@ theme = "hugo-PaperMod"
   hideSummary = false  # Set to true to hide summary in list view
   # Enable search
   enableRSS = true
+  # Disable google analytics to fix build error
+  # googleAnalytics = "UA-12345678-9"  # Comment out or remove this line
 
 [markup]
   [markup.highlight]

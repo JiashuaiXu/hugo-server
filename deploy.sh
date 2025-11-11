@@ -4,8 +4,8 @@ set -e
 # 进入 Hugo 站点目录
 cd jesse-blog
 
-# 生成静态站点（输出到 public/）
-hugo -D
+# 生成静态站点（输出到 public/） using nix develop environment
+nix develop --command bash -c "hugo -D"
 
 # 进入 public 目录
 cd public
