@@ -4,7 +4,6 @@ title = "Jesse's Blog"
 theme = "hugo-PaperMod"
 
 [params]
-  env = "production"  # to enable google analytics, opengraph, twitter-cards, schema, etc.
   description = "Jesse's personal blog"
   author = "Jesse"
   # defaultTheme = "dark" # Enable this to always use dark mode
@@ -29,24 +28,23 @@ theme = "hugo-PaperMod"
     # lineNos = true  # Enable this if you want line numbers
     tabWidth = 4
 
-[menu.main]
-  [[menu.main]]
-    identifier = "home"
-    name = "Home"
-    url = "/"
-    weight = 10
+[[menu.main]]
+  identifier = "home"
+  name = "Home"
+  url = "/"
+  weight = 10
 
-  [[menu.main]]
-    identifier = "archive"
-    name = "Archive"
-    url = "/archive/"
-    weight = 20
+[[menu.main]]
+  identifier = "archive"
+  name = "Archive"
+  url = "/archive/"
+  weight = 20
 
-  [[menu.main]]
-    identifier = "about"
-    name = "About"
-    url = "/about/"
-    weight = 30
+[[menu.main]]
+  identifier = "about"
+  name = "About"
+  url = "/about/"
+  weight = 30
 
 [outputs]
   home = ["HTML", "RSS"]
