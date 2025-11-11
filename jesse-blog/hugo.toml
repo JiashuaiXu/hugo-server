@@ -1,25 +1,61 @@
 baseURL = "https://JiashuaiXu.github.io/"
 languageCode = "en-us"
 title = "Jesse's Blog"
-theme = "hugo-theme-stack"
+theme = "hugo-PaperMod"
 
 [params]
-  defaultTheme = "auto"  # 主题模式：light, dark, auto
-  title = "Jesse's Blog"
-  description = "A personal blog built with Hugo and Stack theme"
-
-[menu]
-  [[menu.main]]
-    name = "Home"
-    url = "/"
-    weight = 1
-
-  [[menu.main]]
-    name = "About"
-    url = "/about/"
-    weight = 2
+  env = "production"  # to enable google analytics, opengraph, twitter-cards, schema, etc.
+  description = "Jesse's personal blog"
+  author = "Jesse"
+  # defaultTheme = "dark" # Enable this to always use dark mode
+  # defaultTheme = "light" # Enable this to always use light mode
+  defaultTheme = "auto" # Enable this to switch auto dark/light mode
+  showShareButtons = true
+  showReadingTime = true
+  showPostNavLinks = true
+  showBreadCrumbs = true
+  showCodeCopyButtons = true
+  disableSpecial1stPost = false
+  disableAnchoredHeadings = false
+  displayFullLangName = true
+  hideSingle = false  # Set to true to hide single page of section
+  hideSummary = false  # Set to true to hide summary in list view
+  # Enable search
+  enableRSS = true
 
 [markup]
   [markup.highlight]
     style = "dracula"
+    # lineNos = true  # Enable this if you want line numbers
+    tabWidth = 4
+
+[menu.main]
+  [[menu.main]]
+    identifier = "home"
+    name = "Home"
+    url = "/"
+    weight = 10
+
+  [[menu.main]]
+    identifier = "archive"
+    name = "Archive"
+    url = "/archive/"
+    weight = 20
+
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 30
+
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  term = ["HTML", "RSS"]
+
+[outputFormats]
+  [outputFormats.RSS]
+    mediatype = "application/rss"
+    baseName = "feed"
 

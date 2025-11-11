@@ -1,6 +1,6 @@
 # Hugo Blog Server
 
-一个基于 [Hugo](https://gohugo.io/) 静态网站生成器构建的个人博客项目，使用 [Stack 主题](https://github.com/CaiJimmy/hugo-theme-stack)，并通过 Nix Flakes 管理开发环境。
+一个基于 [Hugo](https://gohugo.io/) 静态网站生成器构建的个人博客项目，使用 [PaperMod](https://github.com/adityatelange/hugo-PaperMod) 主题，并通过 Nix Flakes 管理开发环境。支持使用 [Obsidian](https://obsidian.md/) 进行笔记写作和发布。
 
 ## 📋 项目简介
 
@@ -9,17 +9,19 @@
 ## ✨ 功能特性
 
 - 🚀 **快速部署**：一键部署脚本，自动生成并推送到 GitHub Pages
-- 🎨 **现代主题**：使用 Hugo Stack 主题，支持亮色/暗色模式自动切换
+- 🎨 **现代主题**：使用 Hugo PaperMod 主题，支持亮色/暗色模式自动切换
 - 🔧 **环境管理**：通过 Nix Flakes 提供可复现的开发环境
 - 📝 **Markdown 支持**：使用 Markdown 编写博客文章
+- 🧠 **Obsidian 集成**：支持使用 Obsidian 进行笔记写作和发布工作流
 - 🌐 **多语言支持**：可配置多语言内容
 - 📱 **响应式设计**：适配各种设备屏幕
 
 ## 🛠️ 技术栈
 
 - **静态网站生成器**：Hugo
-- **主题**：hugo-theme-stack
+- **主题**：hugo-PaperMod
 - **环境管理**：Nix Flakes
+- **笔记工具**：Obsidian
 - **部署平台**：GitHub Pages
 - **版本控制**：Git
 
@@ -35,7 +37,7 @@ hugo-server/
 │   ├── public/              # Hugo 生成的静态网站（Git 子模块）
 │   ├── resources/           # Hugo 生成的资源文件
 │   ├── themes/              # Hugo 主题目录
-│   │   └── hugo-theme-stack/ # Stack 主题
+│   │   └── hugo-PaperMod/   # PaperMod 主题
 │   └── hugo.toml            # Hugo 配置文件
 ├── deploy.sh                # 自动部署脚本
 ├── flake.nix                # Nix Flakes 配置文件
@@ -48,6 +50,7 @@ hugo-server/
 - **Nix** (推荐) 或 **Hugo** (直接安装)
 - **Git**
 - **GitHub 账户**（用于部署）
+- **Obsidian**（可选，用于笔记写作）
 
 ## 📦 安装与设置
 
@@ -123,6 +126,57 @@ hugo -D  # 生成包含草稿的静态网站
 
 生成的网站位于 `jesse-blog/public/` 目录。
 
+## 🧠 Obsidian 集成指南
+
+这个博客支持使用 Obsidian 进行笔记写作和发布工作流。以下是设置和使用方法：
+
+### 1. 设置 Obsidian 仓库链接
+
+1. 将 `jesse-blog/content` 目录设置为您的 Obsidian vault
+2. 或者，创建一个符号链接将 Obsidian vault 指向 Hugo 的 content 目录
+
+```bash
+# 在 Obsidian vault 设置中，将 vault 设置为 jesse-blog/content 目录
+# 或创建符号链接
+ln -s /path/to/hugo-server/jesse-blog/content /path/to/your/obsidian/vault
+```
+
+### 2. Obsidian 配置
+
+- 在 Obsidian 中安装有用的插件：
+  - **Templater**：用于创建 Hugo 兼容的 frontmatter 模板
+  - **Dataview**：用于动态内容查询
+  - **Obsidian Publish**（可选）：如果使用 Obsidian 的发布功能
+
+### 3. Frontmatter 模板
+
+在 Obsidian 中创建一个模板，确保每篇笔记都包含必要的 Hugo frontmatter：
+
+```
+---
+title: "{{title}}"
+date: {{date:YYYY-MM-DDTHH:mm:ss+08:00}}
+draft: true
+tags: []
+categories: []
+---
+
+```
+
+### 4. 链接格式转换
+
+请注意，Obsidian 使用 `[[Page Title]]` 格式的内部链接，而 Hugo 使用标准 Markdown 链接。您需要：
+- 将 `[[Page Title]]` 转换为 `[Page Title](/path-to-page)` 
+- 或使用 Hugo 的 `ref`/`relref` 链接语法
+
+### 5. 工作流程
+
+1. 在 Obsidian 中写笔记
+2. 使用正确的 frontmatter 格式
+3. 将笔记文件移动到 `content/posts/` 目录
+4. 运行 `hugo server -D` 预览
+5. 调整内容并发布
+
 ## 📤 部署
 
 ### 自动部署（推荐）
@@ -180,7 +234,14 @@ hugo -D  # 生成包含草稿的静态网站
 
 ### 主题配置
 
-主题位于 `jesse-blog/themes/hugo-theme-stack/`，可根据需要自定义。
+主题位于 `jesse-blog/themes/hugo-PaperMod/`，可根据需要自定义。PaperMod 主题配置说明：
+
+- `params.defaultTheme`: 默认主题模式（light/dark/auto）
+- `params.showShareButtons`: 显示分享按钮
+- `params.showReadingTime`: 显示阅读时间
+- `params.showPostNavLinks`: 显示文章导航链接
+- `params.showBreadCrumbs`: 显示面包屑导航
+- `params.showCodeCopyButtons`: 显示代码复制按钮
 
 ## 📝 编写文章
 
@@ -210,7 +271,18 @@ hugo new posts/article-name.md
 
 # 查看帮助
 hugo help
+
+# 搜索功能（如果启用）
+# PaperMod 提供了搜索功能，在配置中启用后可以使用
 ```
+
+## 📚 相关资源
+
+- [Hugo 官方文档](https://gohugo.io/documentation/)
+- [PaperMod 主题文档](https://adityatelange.github.io/hugo-PaperMod/)
+- [Obsidian 官方网站](https://obsidian.md/)
+- [Nix Flakes 文档](https://nixos.wiki/wiki/Flakes)
+- [GitHub Pages 文档](https://docs.github.com/en/pages)
 
 ## 📚 相关资源
 
