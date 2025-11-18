@@ -2,6 +2,17 @@
 
 基于 Hugo + PaperMod 主题的个人博客，集成 Obsidian 笔记管理，通过 GitHub Actions 实现完全自动化的 CI/CD 部署流程。
 
+## 📚 文档导航
+
+- **[完整文档索引](./docs/DOCUMENTATION_INDEX.md)** - 快速查找所有文档
+- **[GitHub Actions 配置指南](./docs/SETUP_GUIDE.md)** - 详细的配置步骤
+- **[Giscus 评论系统配置](./docs/GISCUS_SETUP.md)** - 评论功能设置
+- **[Obsidian 内容仓库文档](./jesse-blog/content/README.md)** - 写作和发布指南
+
+---
+
+基于 Hugo + PaperMod 主题的个人博客，集成 Obsidian 笔记管理，通过 GitHub Actions 实现完全自动化的 CI/CD 部署流程。
+
 ## 📊 系统架构
 
 ```
@@ -97,7 +108,7 @@ cd hugo-server
 
 2. **配置 GitHub Secrets**
 
-   参考 [SETUP_GUIDE.md](./SETUP_GUIDE.md) 完成配置：
+   参考 [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md) 完成配置：
    - hugo-server: 添加 `GH_PAT`
    - obsidian-notes: 添加 `GH_PAT`
 
@@ -520,7 +531,7 @@ content/
 
 **配置步骤**：
 
-查看详细指南：[GISCUS_SETUP.md](./GISCUS_SETUP.md)
+查看详细指南：[GISCUS_SETUP.md](./docs/GISCUS_SETUP.md)
 
 快速配置：
 
@@ -592,7 +603,7 @@ PaperMod 支持多种评论系统，编辑 `hugo.toml`：
 
 遇到问题？
 
-1. 查阅 [SETUP_GUIDE.md](./SETUP_GUIDE.md)
+1. 查阅 [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md)
 2. 检查 GitHub Actions 日志
 3. 参考 Hugo 和 PaperMod 官方文档
 

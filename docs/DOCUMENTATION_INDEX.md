@@ -4,7 +4,7 @@
 
 ## 核心文档
 
-### [README.md](./README.md) ⭐
+### [README.md](../README.md) ⭐
 **主要文档** - 完整的系统架构、使用指南和故障排查
 
 **内容包括**：
@@ -27,7 +27,7 @@
 - 使用流程说明
 - 常见问题解答
 
-### [obsidian-notes/README.md](./jesse-blog/content/README.md) 📝
+### [obsidian-notes/README.md](../jesse-blog/content/README.md) 📝
 **内容仓库文档** - Obsidian 集成和写作指南
 
 **内容包括**：
