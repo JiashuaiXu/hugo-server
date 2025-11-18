@@ -26,7 +26,7 @@
 1. 访问：https://github.com/JiashuaiXu/hugo-server/settings/secrets/actions
 2. 点击 **New repository secret**
 3. 添加：
-   - **Name**: `PERSONAL_TOKEN`
+   - **Name**: `GH_PAT`
    - **Secret**: 粘贴刚才复制的 token
 4. 点击 **Add secret**
 
@@ -35,7 +35,7 @@
 1. 访问：https://github.com/JiashuaiXu/obsidian-notes/settings/secrets/actions
 2. 点击 **New repository secret**
 3. 添加：
-   - **Name**: `HUGO_SERVER_TOKEN`
+   - **Name**: `GH_PAT`
    - **Secret**: 粘贴相同的 token
 4. 点击 **Add secret**
 
@@ -127,7 +127,7 @@ https://github.com/JiashuaiXu/hugo-server/actions/workflows/deploy.yml
    - obsidian-notes: https://github.com/JiashuaiXu/obsidian-notes/actions
 
 2. 常见问题：
-   - ❌ `PERSONAL_TOKEN` 或 `HUGO_SERVER_TOKEN` 未设置
+   - ❌ `GH_PAT` 或 `GH_PAT` 未设置
    - ❌ Token 权限不足（需要 `repo` 和 `workflow`）
    - ❌ Token 已过期
 
@@ -135,7 +135,7 @@ https://github.com/JiashuaiXu/hugo-server/actions/workflows/deploy.yml
 
 1. 检查 obsidian-notes 的 workflow 是否存在
 2. 确认推送的文件路径匹配 workflow 的 `paths` 配置
-3. 检查 `HUGO_SERVER_TOKEN` 是否正确设置
+3. 检查 `GH_PAT` 是否正确设置
 
 ### 仍然出现 Git 冲突
 
