@@ -1,5 +1,5 @@
 baseURL = "https://JiashuaiXu.github.io/"
-languageCode = "en-us"
+languageCode = "zh-cn"
 title = "Jesse's Blog"
 theme = "hugo-PaperMod"
 
@@ -23,6 +23,25 @@ theme = "hugo-PaperMod"
   enableRSS = true
   # Disable google analytics to fix build error
   # googleAnalytics = "UA-12345678-9"  # Comment out or remove this line
+
+  # 评论系统配置 (giscus)
+  [params.comments]
+    enabled = true
+    provider = "giscus"
+    
+    [params.comments.giscus]
+      repo = "JiashuaiXu/hugo-server"
+      repoId = ""  # 需要填写，访问 https://giscus.app 获取
+      category = "Announcements"
+      categoryId = ""  # 需要填写，访问 https://giscus.app 获取
+      mapping = "pathname"
+      strict = "0"
+      reactionsEnabled = "1"
+      emitMetadata = "0"
+      inputPosition = "bottom"
+      theme = "preferred_color_scheme"
+      lang = "zh-CN"
+      loading = "lazy"
 
 [markup]
   [markup.highlight]
@@ -58,4 +77,3 @@ theme = "hugo-PaperMod"
   [outputFormats.RSS]
     mediatype = "application/rss"
     baseName = "feed"
-
