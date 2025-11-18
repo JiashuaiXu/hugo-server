@@ -1,353 +1,171 @@
-# Hugo Blog Server
+# Hugo 博客自动化部署系统
 
-一个基于 [Hugo](https://gohugo.io/) 静态网站生成器构建的个人博客项目，使用 [PaperMod](https://github.com/adityatelange/hugo-PaperMod) 主题，并通过 Nix Flakes 管理开发环境。支持使用 [Obsidian](https://obsidian.md/) 进行笔记写作和发布。
+基于 Hugo + PaperMod 主题的个人博客，集成 Obsidian 笔记管理，通过 GitHub Actions 实现完全自动化的 CI/CD 部署流程。
 
-## 📋 项目简介
+## 📊 系统架构
 
-这是一个私有 GitHub 仓库，用于安全地存储博客源代码和配置。生成的静态网站通过 `public/` 目录关联到公开仓库 [JiashuaiXu.github.io](https://github.com/JiashuaiXu/JiashuaiXu.github.io)，用于 GitHub Pages 部署。
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    完整工作流程                              │
+└─────────────────────────────────────────────────────────────┘
 
-## ✨ 功能特性
+  📝 Obsidian 编辑                    🎨 主题配置
+       │                                   │
+       ▼                                   ▼
+┌──────────────────┐              ┌──────────────────┐
+│ obsidian-notes   │              │  hugo-server     │
+│ (内容仓库)       │◄─────────────│  (主仓库)        │
+│                  │   submodule  │                  │
+└────────┬─────────┘              └────────┬─────────┘
+         │ git push                        │ git push
+         │                                 │
+         ▼                                 ▼
+┌────────────────────────────────────────────────────┐
+│          GitHub Actions (自动触发)                  │
+│  ┌──────────────────┐    ┌───────────────────┐    │
+│  │ Trigger Workflow │───▶│ Build & Deploy    │    │
+│  │ (obsidian-notes) │    │ (hugo-server)     │    │
+│  └──────────────────┘    └─────────┬─────────┘    │
+│                                    │               │
+└────────────────────────────────────┼───────────────┘
+                                     │
+                                     ▼
+                          ┌────────────────────┐
+                          │  GitHub Pages      │
+                          │  JiashuaiXu.github │
+                          │  .io               │
+                          └────────────────────┘
+```
 
-- 🚀 **快速部署**：一键部署脚本，自动生成并推送到 GitHub Pages
-- 🎨 **现代主题**：使用 Hugo PaperMod 主题，支持亮色/暗色模式自动切换
-- 🔧 **环境管理**：通过 Nix Flakes 提供可复现的开发环境
-- 📝 **Markdown 支持**：使用 Markdown 编写博客文章
-- 🧠 **Obsidian 集成**：支持使用 Obsidian 进行笔记写作和发布工作流
-- 🌐 **多语言支持**：可配置多语言内容
-- 📱 **响应式设计**：适配各种设备屏幕
+## 🗂️ 仓库结构
 
-## 🛠️ 技术栈
+### 主仓库：hugo-server
 
-- **静态网站生成器**：Hugo
-- **主题**：hugo-PaperMod
-- **环境管理**：Nix Flakes
-- **笔记工具**：Obsidian
-- **部署平台**：GitHub Pages
-- **版本控制**：Git
-
-## 📁 项目结构
-
-```text
+```
 hugo-server/
-├── jesse-blog/              # Hugo 站点（主目录）
-│   ├── archetypes/          # 文章模板
-│   ├── assets/              # 静态资源文件
-│   ├── content/             # Markdown 博客文章
-│   │   └── posts/           # 博客文章目录
-│   ├── public/              # Hugo 生成的静态网站（Git 子模块）
-│   ├── resources/           # Hugo 生成的资源文件
-│   ├── themes/              # Hugo 主题目录
-│   │   └── hugo-PaperMod/   # PaperMod 主题
-│   └── hugo.toml            # Hugo 配置文件
-├── deploy.sh                # 自动部署脚本
-├── flake.nix                # Nix Flakes 配置文件
-├── flake.lock               # Nix 依赖锁定文件
-└── README.md                # 项目说明文档
+├── .github/
+│   └── workflows/
+│       └── deploy.yml              # GitHub Actions 自动部署配置
+├── jesse-blog/                     # Hugo 站点目录
+│   ├── content/                    # 📝 内容目录 (submodule → obsidian-notes)
+│   ├── themes/
+│   │   └── hugo-PaperMod/         # 🎨 PaperMod 主题 (submodule)
+│   ├── public/                     # 🚫 构建输出 (gitignore，由 Actions 生成)
+│   └── hugo.toml                   # ⚙️  Hugo 配置文件
+├── dev.sh                          # 🔧 本地预览脚本
+├── deploy.sh                       # ⚠️  已弃用提示
+├── SETUP_GUIDE.md                  # 📘 详细配置指南
+├── .gitignore                      # 忽略 public/ 目录
+└── README.md                       # 📖 本文档
 ```
 
-## 🔧 环境要求
+### 内容仓库：obsidian-notes
 
-- **Nix** (推荐) 或 **Hugo** (直接安装)
-- **Git**
-- **GitHub 账户**（用于部署）
-- **Obsidian**（可选，用于笔记写作）
+```
+obsidian-notes/
+├── .github/
+│   └── workflows/
+│       └── trigger-hugo.yml        # 触发 hugo-server 构建的 workflow
+├── posts/                          # 博客文章目录
+├── about/                          # 关于页面
+└── archive/                        # 归档内容
+```
 
-## 📦 安装与设置
+### 部署仓库：JiashuaiXu.github.io
 
-### 方式一：使用 Nix Flakes（推荐）
+```
+JiashuaiXu.github.io/
+└── (由 GitHub Actions 自动生成和更新的静态网站文件)
+```
 
-1. **安装 Nix 和启用 Flakes**
+## 🚀 快速开始
 
-   ```bash
-   # 如果尚未安装 Nix，请访问 https://nixos.org/download.html
-   # 启用 Flakes 功能
-   mkdir -p ~/.config/nix
-   echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-   ```
+### 前置要求
 
-2. **进入开发环境**
+- ✅ 已配置 GitHub Personal Access Token (权限: `repo`, `workflow`)
+- ✅ 在两个仓库添加 Secret: `GH_PAT`
+- ✅ 本地安装 Hugo (用于预览)
 
-   ```bash
-   nix develop
-   ```
+### 初次配置
 
-   这将自动安装 Hugo 和 Git，并进入开发环境。
-
-### 方式二：直接安装 Hugo
-
-1. **安装 Hugo**
-
-   - macOS: `brew install hugo`
-   - Linux: 参考 [Hugo 官方文档](https://gohugo.io/installation/)
-   - Windows: 使用 Chocolatey `choco install hugo`
-
-2. **克隆仓库**
-
-   ```bash
-   git clone <repository-url>
-   cd hugo-server
-   ```
-
-## 🚀 使用方法
-
-### 本地开发
-
-1. **启动本地服务器**
-
-   ```bash
-   cd jesse-blog
-   hugo server -D
-   ```
-
-   访问 `http://localhost:1313` 查看博客。
-
-2. **创建新文章**
-
-   ```bash
-   hugo new posts/your-post-name.md
-   ```
-
-   编辑 `content/posts/your-post-name.md` 文件。
-
-3. **预览草稿**
-
-   使用 `-D` 参数可以预览草稿文章：
-
-   ```bash
-   hugo server -D
-   ```
-
-### 构建静态网站
+1. **克隆仓库并初始化子模块**
 
 ```bash
-cd jesse-blog
-hugo -D  # 生成包含草稿的静态网站
+git clone --recursive git@github.com:JiashuaiXu/hugo-server.git
+cd hugo-server
 ```
 
-生成的网站位于 `jesse-blog/public/` 目录。
+2. **配置 GitHub Secrets**
 
-## 🧠 Obsidian 集成指南
+   参考 [SETUP_GUIDE.md](./SETUP_GUIDE.md) 完成配置：
+   - hugo-server: 添加 `GH_PAT`
+   - obsidian-notes: 添加 `GH_PAT`
 
-这个博客支持使用 Obsidian 进行笔记写作和发布工作流。以下是设置和使用方法：
-
-### 1. 设置 Obsidian 仓库链接
-
-1. 将 `jesse-blog/content` 目录设置为您的 Obsidian vault
-2. 或者，创建一个符号链接将 Obsidian vault 指向 Hugo 的 content 目录
+3. **本地预览**
 
 ```bash
-# 在 Obsidian vault 设置中，将 vault 设置为 jesse-blog/content 目录
-# 或创建符号链接
-ln -s /path/to/hugo-server/jesse-blog/content /path/to/your/obsidian/vault
-```
-
-### 2. Obsidian 配置
-
-- 在 Obsidian 中安装有用的插件：
-  - **Templater**：用于创建 Hugo 兼容的 frontmatter 模板
-  - **Dataview**：用于动态内容查询
-  - **Obsidian Publish**（可选）：如果使用 Obsidian 的发布功能
-
-### 3. Frontmatter 模板
-
-在 Obsidian 中创建一个模板，确保每篇笔记都包含必要的 Hugo frontmatter：
-
-```
----
-title: "{{title}}"
-date: {{date:YYYY-MM-DDTHH:mm:ss+08:00}}
-draft: true
-tags: []
-categories: []
----
-
-```
-
-### 4. 链接格式转换
-
-请注意，Obsidian 使用 `[[Page Title]]` 格式的内部链接，而 Hugo 使用标准 Markdown 链接。您需要：
-- 将 `[[Page Title]]` 转换为 `[Page Title](/path-to-page)` 
-- 或使用 Hugo 的 `ref`/`relref` 链接语法
-
-### 5. 工作流程
-
-1. 在 Obsidian 中写笔记
-2. 使用正确的 frontmatter 格式
-3. 将笔记文件移动到 `content/posts/` 目录
-4. 运行 `hugo server -D` 预览
-5. 调整内容并发布
-
-## 📤 部署
-
-### 自动部署（推荐）
-
-使用提供的部署脚本：
-
-```bash
-./deploy.sh
-```
-
-脚本将：
-
-1. 生成静态网站到 `public/` 目录
-2. 提交并推送到 GitHub Pages 仓库
-3. 更新子模块引用
-
-### 手动部署
-
-1. **生成静态网站**
-
-   ```bash
-   cd jesse-blog
-   hugo -D
-   ```
-
-2. **提交到 GitHub Pages**
-
-   ```bash
-   cd public
-   git add .
-   git commit -m "Deploy: $(date +%Y-%m-%d)"
-   git push origin main
-   ```
-
-3. **更新主仓库**
-
-   ```bash
-   cd ..
-   git add public
-   git commit -m "Update submodule reference"
-   git push origin main
-   ```
-
-## ⚙️ 配置说明
-
-### Hugo 配置
-
-主要配置文件：`jesse-blog/hugo.toml`
-
-- `baseURL`: 网站基础 URL
-- `languageCode`: 语言代码
-- `title`: 网站标题
-- `theme`: 使用的主题
-- `params.defaultTheme`: 默认主题模式（light/dark/auto）
-
-### 主题配置
-
-主题位于 `jesse-blog/themes/hugo-PaperMod/`，可根据需要自定义。PaperMod 主题配置说明：
-
-- `params.defaultTheme`: 默认主题模式（light/dark/auto）
-- `params.showShareButtons`: 显示分享按钮
-- `params.showReadingTime`: 显示阅读时间
-- `params.showPostNavLinks`: 显示文章导航链接
-- `params.showBreadCrumbs`: 显示面包屑导航
-- `params.showCodeCopyButtons`: 显示代码复制按钮
-
-## 📝 编写文章
-
-文章使用 Markdown 格式，位于 `content/posts/` 目录。文章 Front Matter 示例：
-
-```yaml
----
-title: "文章标题"
-date: 2025-02-26T12:00:00+08:00
-draft: false
-tags: ["标签1", "标签2"]
-categories: ["分类"]
----
-```
-
-## 🔍 常用命令
-
-```bash
-# 启动开发服务器
-hugo server -D
-
-# 生成静态网站
-hugo -D
-
-# 创建新文章
-hugo new posts/article-name.md
-
-# 查看帮助
-hugo help
-
-# 搜索功能（如果启用）
-# PaperMod 提供了搜索功能，在配置中启用后可以使用
-```
-
-## 📚 相关资源
-
-- [Hugo 官方文档](https://gohugo.io/documentation/)
-- [PaperMod 主题文档](https://adityatelange.github.io/hugo-PaperMod/)
-- [Obsidian 官方网站](https://obsidian.md/)
-- [Nix Flakes 文档](https://nixos.wiki/wiki/Flakes)
-- [GitHub Pages 文档](https://docs.github.com/en/pages)
-
-## 📚 相关资源
-
-- [Hugo 官方文档](https://gohugo.io/documentation/)
-- [Stack 主题文档](https://github.com/CaiJimmy/hugo-theme-stack)
-- [Nix Flakes 文档](https://nixos.wiki/wiki/Flakes)
-- [GitHub Pages 文档](https://docs.github.com/en/pages)
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-## 📄 许可证
-
-本项目为私有仓库，仅供个人使用。
-
----
-
-**注意**：`public/` 目录是一个 Git 子模块，指向 GitHub Pages 仓库。请勿直接修改该目录中的文件，应通过 `hugo` 命令生成。
-
----
-
-## 🚀 自动化部署工作流程（新）
-
-### 概述
-
-项目已升级为完全自动化的部署流程，解决了手动部署与 GitHub Actions 冲突的问题。
-
-**工作流程：**
-```
-Obsidian 编辑 → Push 到 obsidian-notes → 自动触发 hugo-server → 构建并部署
-```
-
-### 快速开始
-
-#### 1. 本地预览
-
-```bash
-# 基本预览
 ./dev.sh
-
-# 局域网访问（其他设备查看）
-./dev.sh 0.0.0.0
-
-# 自定义 baseURL
-./dev.sh 0.0.0.0 http://192.168.1.100:1313
 ```
 
-#### 2. 发布内容
+访问配置的 URL (默认: http://192.168.100.140:1313)
 
-在 Obsidian 或 `jesse-blog/content` 目录编辑内容后：
+## 📝 日常使用
+
+### 1. 写作和发布文章
+
+#### 方式 A：在 Obsidian 中编辑
+
+1. 打开 Obsidian，vault 路径设为 `jesse-blog/content` 或 `obsidian-notes` 仓库
+2. 编辑或创建 Markdown 文章
+3. 提交并推送：
 
 ```bash
-cd jesse-blog/content
+cd jesse-blog/content  # 或 obsidian-notes 仓库目录
 git add .
-git commit -m "Add new post"
+git commit -m "Add: 新文章标题"
 git push
 ```
 
-✨ GitHub Actions 会自动构建并部署到 GitHub Pages！
-
-#### 3. 修改主题/配置
+#### 方式 B：直接在终端编辑
 
 ```bash
-# 1. 修改主题或配置文件
+cd /path/to/hugo-server/jesse-blog/content/posts
+vim my-new-post.md  # 或使用其他编辑器
+cd ..
+git add .
+git commit -m "Add: 新文章标题"
+git push
+```
+
+✨ **自动触发流程**：
+1. obsidian-notes workflow 检测到 .md 文件变更
+2. 触发 hugo-server 的 `repository_dispatch` 事件
+3. hugo-server 拉取最新内容 → 构建 → 部署到 GitHub Pages
+
+⏱️ **预计 2-5 分钟后**，新文章出现在 https://JiashuaiXu.github.io
+
+### 2. 本地预览（修改主题/调试样式）
+
+```bash
+# 基本预览（默认配置）
+./dev.sh
+
+# 自定义 bind 地址
+./dev.sh 0.0.0.0
+
+# 完全自定义
+./dev.sh 0.0.0.0 http://192.168.1.100:1313
+```
+
+**用途**：
+- 实时预览主题修改
+- 调试文章排版
+- 测试新功能
+
+### 3. 修改主题或配置
+
+```bash
+# 1. 编辑配置
 vim jesse-blog/hugo.toml
 
 # 2. 本地预览效果
@@ -355,69 +173,411 @@ vim jesse-blog/hugo.toml
 
 # 3. 满意后提交
 git add jesse-blog/
-git commit -m "Update theme"
+git commit -m "Update: 调整主题配置"
 git push
 ```
 
-✨ 自动触发构建和部署！
+✨ **自动触发**：hugo-server 检测到配置或主题变更 → 构建部署
 
-### 配置 GitHub Actions
+### 4. 手动触发部署
 
-**⚠️ 首次使用需要配置 GitHub Tokens**
+访问 GitHub Actions 页面：
+https://github.com/JiashuaiXu/hugo-server/actions/workflows/deploy.yml
 
-详细步骤请参阅：[SETUP_GUIDE.md](./SETUP_GUIDE.md)
+点击 **Run workflow** 按钮
 
-简要步骤：
-1. 创建 GitHub Personal Access Token（需要 `repo` 和 `workflow` 权限）
-2. 在 `hugo-server` 仓库添加 Secret: `PERSONAL_TOKEN`
-3. 在 `obsidian-notes` 仓库添加 Secret: `HUGO_SERVER_TOKEN`
-4. 在 `obsidian-notes` 部署触发器 workflow（见 `obsidian-notes-workflow.yml`）
+## ⚙️ 核心配置
 
-### 优势
+### Hugo 配置文件
 
-- ✅ **无冲突**：不再需要手动部署，避免 Git 冲突
-- ✅ **自动化**：内容更新自动触发构建
-- ✅ **灵活预览**：本地随时预览主题修改
-- ✅ **多仓库同步**：内容、主题、部署完全分离
+位置：`jesse-blog/hugo.toml`
 
-### 故障排查
+关键配置项：
 
-如果遇到问题，请查看：
-- GitHub Actions 日志：https://github.com/JiashuaiXu/hugo-server/actions
-- 详细排查指南：[SETUP_GUIDE.md](./SETUP_GUIDE.md#故障排查)
+```toml
+baseURL = "https://JiashuaiXu.github.io/"
+languageCode = "zh-cn"
+title = "Jesse's Blog"
+theme = "hugo-PaperMod"
 
-### 回退到手动部署
+[params]
+  defaultTheme = "auto"
+  showReadingTime = true
+  showShareButtons = true
+  showPostNavLinks = true
+  # ... 更多 PaperMod 配置
+```
 
-如需临时使用手动部署：
+### 文章 Front Matter 模板
+
+```yaml
+---
+title: "文章标题"
+date: 2025-11-18T10:00:00+08:00
+draft: false
+tags: ["标签1", "标签2"]
+categories: ["分类"]
+description: "文章简介"
+---
+
+# 文章内容
+
+这里是正文...
+```
+
+### Obsidian 配置
+
+**Vault 路径**：
+- 选项 1：`/path/to/hugo-server/jesse-blog/content`
+- 选项 2：独立克隆 `obsidian-notes` 仓库
+
+**模板配置**（推荐）：
+
+在 Obsidian 设置 → 模板 → 模板文件夹，创建 `blog-post.md`：
+
+```yaml
+---
+title: "{{title}}"
+date: {{date:YYYY-MM-DDTHH:mm:ss+08:00}}
+draft: false
+tags: []
+categories: []
+---
+
+# {{title}}
+
+```
+
+## 🔧 GitHub Actions 详解
+
+### hugo-server/.github/workflows/deploy.yml
+
+```yaml
+name: Build and Deploy Hugo Site
+
+on:
+  repository_dispatch:      # obsidian-notes 触发
+    types: [content-updated]
+  workflow_dispatch:        # 手动触发
+  push:                     # 配置/主题变更触发
+    branches: [main]
+    paths:
+      - 'jesse-blog/hugo.toml'
+      - 'jesse-blog/themes/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with submodules
+      - name: Update content to latest
+      - name: Setup Hugo
+      - name: Build site
+      - name: Deploy to GitHub Pages
+```
+
+**触发条件**：
+1. ✅ obsidian-notes 内容更新
+2. ✅ 主题或配置文件变更
+3. ✅ 手动触发
+
+### obsidian-notes/.github/workflows/trigger-hugo.yml
+
+```yaml
+name: Trigger Hugo Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'posts/**'
+      - 'about/**'
+      - 'archive/**'
+
+jobs:
+  trigger-hugo-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call hugo-server API
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GH_PAT }}" \
+            https://api.github.com/repos/JiashuaiXu/hugo-server/dispatches \
+            -d '{"event_type":"content-updated"}'
+```
+
+**作用**：检测到内容变更 → 触发 hugo-server 构建
+
+## 📦 依赖管理
+
+### Git Submodules
+
+查看子模块状态：
 
 ```bash
-./deploy.sh.backup
+git submodule status
 ```
 
-⚠️ 注意：手动部署可能与自动部署冲突！
+更新子模块：
+
+```bash
+# 更新所有子模块
+git submodule update --remote --merge
+
+# 更新特定子模块
+git submodule update --remote --merge jesse-blog/content
+```
+
+初始化子模块（新克隆时）：
+
+```bash
+git submodule update --init --recursive
+```
+
+### 主题更新
+
+PaperMod 主题作为子模块管理：
+
+```bash
+cd jesse-blog/themes/hugo-PaperMod
+git pull origin master
+cd ../../..
+git add jesse-blog/themes/hugo-PaperMod
+git commit -m "Update: PaperMod theme to latest"
+git push
+```
+
+## 🐛 故障排查
+
+### 问题 1：Actions 构建失败
+
+**检查步骤**：
+
+1. 查看 Actions 日志：
+   - https://github.com/JiashuaiXu/hugo-server/actions
+   - https://github.com/JiashuaiXu/obsidian-notes/actions
+
+2. 常见原因：
+   - ❌ `GH_PAT` secret 未配置或已过期
+   - ❌ Token 权限不足（需要 `repo` + `workflow`）
+   - ❌ Hugo 语法错误（检查文章 front matter）
+
+**解决方案**：
+
+重新生成 token：https://github.com/settings/tokens
+
+### 问题 2：内容更新未触发构建
+
+**排查**：
+
+1. 检查 obsidian-notes workflow 是否执行
+2. 确认推送的文件路径符合 `paths` 配置
+3. 验证 `GH_PAT` 在 obsidian-notes 中已配置
+
+**手动触发**：
+
+访问 hugo-server Actions 页面手动运行
+
+### 问题 3：本地预览失败
+
+**检查**：
+
+```bash
+# 验证 Hugo 安装
+hugo version
+
+# 检查子模块
+git submodule status
+
+# 重新初始化子模块
+git submodule update --init --recursive
+```
+
+### 问题 4：文章不显示
+
+**可能原因**：
+
+1. `draft: true` 未改为 `false`
+2. `date` 时间在未来
+3. Front matter 格式错误
+
+**解决**：
+
+```bash
+# 使用 -D 参数显示草稿
+hugo server -D
+```
+
+## 🔐 安全注意事项
+
+### Token 管理
+
+- ⚠️ 永远不要在代码中硬编码 token
+- ✅ 仅通过 GitHub Secrets 使用
+- ✅ 定期轮换 token
+- ✅ 使用最小权限原则
+
+### 私有内容
+
+如果有不想公开的内容：
+
+1. 在 obsidian-notes 中使用 `.gitignore`
+2. 或创建独立的私有 Obsidian vault
+
+## 📚 资源链接
+
+### 仓库
+
+- **主仓库**: https://github.com/JiashuaiXu/hugo-server
+- **内容仓库**: https://github.com/JiashuaiXu/obsidian-notes
+- **部署站点**: https://JiashuaiXu.github.io
+
+### GitHub Actions
+
+- **hugo-server Actions**: https://github.com/JiashuaiXu/hugo-server/actions
+- **obsidian-notes Actions**: https://github.com/JiashuaiXu/obsidian-notes/actions
+
+### 文档
+
+- **Hugo 官方文档**: https://gohugo.io/documentation/
+- **PaperMod 主题**: https://github.com/adityatelange/hugo-PaperMod
+- **GitHub Actions 文档**: https://docs.github.com/en/actions
+
+## 🎯 最佳实践
+
+### 文章组织
+
+```
+posts/
+├── 2025/
+│   ├── 01-january/
+│   │   └── article-name.md
+│   └── 02-february/
+│       └── another-article.md
+└── drafts/          # 草稿（设置 draft: true）
+    └── wip.md
+```
+
+### 提交信息规范
+
+```bash
+# 新文章
+git commit -m "Add: 文章标题"
+
+# 更新文章
+git commit -m "Update: 修改文章标题"
+
+# 修复
+git commit -m "Fix: 修复拼写错误"
+
+# 配置变更
+git commit -m "Config: 调整主题配色"
+```
+
+### 图片管理
+
+```
+content/
+├── posts/
+│   └── my-post.md
+└── images/
+    └── my-post/
+        └── screenshot.png
+```
+
+文章中引用：
+
+```markdown
+![描述](/images/my-post/screenshot.png)
+```
+
+## 🆚 架构对比
+
+### 旧架构（已废弃）
+
+```
+❌ 问题：
+- public/ 作为 submodule → commit 引用冲突
+- 手动运行 deploy.sh → 与 Actions 冲突
+- 需要管理多个 submodule 状态
+```
+
+### 新架构（当前）
+
+```
+✅ 优势：
+- public/ 是临时构建产物 → 不追踪，无冲突
+- 完全自动化 → 推送即部署
+- 简化的 submodule 管理 → 仅 content 和 themes
+```
+
+## 💡 进阶技巧
+
+### 自定义域名
+
+在 `hugo.toml` 中：
+
+```toml
+baseURL = "https://yourdomain.com/"
+```
+
+在 GitHub Pages 仓库设置中配置 Custom domain
+
+### 评论系统
+
+PaperMod 支持多种评论系统，编辑 `hugo.toml`：
+
+```toml
+[params.comments]
+  giscus = true
+  # 配置 giscus 参数
+```
+
+### SEO 优化
+
+```toml
+[params]
+  description = "博客描述"
+  images = ["/images/site-cover.png"]
+  
+[params.schema]
+  publisherType = "Person"
+```
+
+### RSS Feed
+
+默认启用，访问：`https://JiashuaiXu.github.io/index.xml`
+
+## 🔄 维护清单
+
+### 每周
+
+- [ ] 检查 GitHub Actions 执行状态
+- [ ] 查看 token 过期时间
+
+### 每月
+
+- [ ] 更新 PaperMod 主题
+- [ ] 检查并更新 Hugo 版本
+
+### 每季度
+
+- [ ] 轮换 GitHub Personal Access Token
+- [ ] 审查和清理旧草稿
+
+## 📞 获取帮助
+
+遇到问题？
+
+1. 查阅 [SETUP_GUIDE.md](./SETUP_GUIDE.md)
+2. 检查 GitHub Actions 日志
+3. 参考 Hugo 和 PaperMod 官方文档
 
 ---
 
-## 📁 项目结构
+**最后更新**: 2025-11-18
 
-```
-hugo-server/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml              # GitHub Actions 自动部署
-├── jesse-blog/                     # Hugo 站点目录
-│   ├── content/                    # 内容目录（submodule: obsidian-notes）
-│   ├── themes/                     # 主题目录
-│   │   └── hugo-PaperMod/          # PaperMod 主题
-│   ├── public/                     # 构建输出（submodule: JiashuaiXu.github.io）
-│   └── hugo.toml                   # Hugo 配置文件
-├── dev.sh                          # 本地预览脚本
-├── deploy.sh                       # 已弃用提示
-├── deploy.sh.backup                # 旧的手动部署脚本
-├── obsidian-notes-workflow.yml     # obsidian-notes 的触发器配置
-└── SETUP_GUIDE.md                  # 详细配置指南
-```
+**维护者**: JiashuaiXu
 
----
-
-**原有文档内容保留在上方**
+**许可证**: MIT
