@@ -1,0 +1,26 @@
+# 这个文件需要放到 obsidian-notes 仓库的 .github/workflows/trigger-hugo.yml
+
+name: Trigger Hugo Build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md'
+      - 'posts/**'
+      - 'about/**'
+      - 'archive/**'
+
+jobs:
+  trigger-hugo-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger hugo-server repository workflow
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.HUGO_SERVER_TOKEN }}" \
+            https://api.github.com/repos/JiashuaiXu/hugo-server/dispatches \
+            -d '{"event_type":"content-updated"}'

@@ -1,0 +1,58 @@
+name: Build and Deploy Hugo Site
+
+on:
+  # 监听来自 obsidian-notes 的触发
+  repository_dispatch:
+    types: [content-updated]
+  
+  # 手动触发
+  workflow_dispatch:
+  
+  # 监听主题和配置文件的变更
+  push:
+    branches:
+      - main
+    paths:
+      - 'jesse-blog/hugo.toml'
+      - 'jesse-blog/themes/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout hugo-server repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.PERSONAL_TOKEN }}
+      
+      - name: Update content submodule to latest
+        run: |
+          cd jesse-blog/content
+          git checkout main
+          git pull origin main
+          cd ../..
+          
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true
+          
+      - name: Build Hugo site
+        run: |
+          cd jesse-blog
+          hugo --minify
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          external_repository: JiashuaiXu/JiashuaiXu.github.io
+          publish_branch: main
+          publish_dir: ./jesse-blog/public
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy Hugo site - ${{ github.event_name }}'

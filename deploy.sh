@@ -1,25 +1,23 @@
-#!/bin/sh
-set -e
+#!/bin/bash
+# ⚠️  已弃用：此脚本已被 GitHub Actions 自动化部署替代
+#
+# 新的工作流程：
+# 1. 本地预览：./dev.sh
+# 2. 在 Obsidian 中编辑内容并推送到 obsidian-notes 仓库
+# 3. GitHub Actions 会自动构建并部署
+#
+# 如果需要使用旧的手动部署方式，请运行：
+#   ./deploy.sh.backup
+#
+# ⚠️  注意：手动部署可能与 GitHub Actions 产生冲突！
 
-# 进入 Hugo 站点目录
-cd jesse-blog
-
-# 生成静态站点（输出到 public/） using nix develop environment
-nix develop --command bash -c "hugo -D"
-
-# 进入 public 目录
-cd public
-
-# 提交并推送到 GitHub Pages
-git add .
-git commit -m "Deploy Hugo site $(date +%Y-%m-%d)"
-git push origin main
-
-# 返回上级目录
-cd ..
-
-# 提交更新子模块的引用
-git add public
-git commit -m "Update submodule reference"
-git push origin main  # 推送到 Hugo 站点仓库
-
+echo "⚠️  此脚本已被弃用"
+echo ""
+echo "新的工作流程："
+echo "  1. 本地预览：./dev.sh"
+echo "  2. 编辑内容并推送到 obsidian-notes"
+echo "  3. GitHub Actions 自动部署"
+echo ""
+echo "如需手动部署，运行："
+echo "  ./deploy.sh.backup"
+echo ""
