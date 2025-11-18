@@ -25,15 +25,15 @@ jobs:
       - name: Checkout hugo-server repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
           token: ${{ secrets.GH_PAT }}
           fetch-depth: 0
       
       - name: Update content submodule to latest
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git submodule update --remote --merge jesse-blog/content
+          cd jesse-blog/content
+          git pull origin main
+          cd ../..
           
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
@@ -55,4 +55,4 @@ jobs:
           publish_dir: ./jesse-blog/public
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy Hugo site - ${{ github.event_name }}'
+          commit_message: 'Deploy: ${{ github.event.head_commit.message || github.event_name }}'
