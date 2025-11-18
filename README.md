@@ -514,6 +514,28 @@ content/
 
 ## 💡 进阶技巧
 
+### 评论系统
+
+博客已配置 Giscus 评论系统（基于 GitHub Discussions）。
+
+**配置步骤**：
+
+查看详细指南：[GISCUS_SETUP.md](./GISCUS_SETUP.md)
+
+快速配置：
+
+1. 启用 GitHub Discussions：https://github.com/JiashuaiXu/hugo-server/settings
+2. 安装 Giscus App：https://github.com/apps/giscus
+3. 获取配置：https://giscus.app/zh-CN
+4. 更新 `jesse-blog/hugo.toml` 中的 `repoId` 和 `categoryId`
+
+**禁用评论**（可选）：
+
+```toml
+[params.comments]
+  enabled = false
+```
+
 ### 自定义域名
 
 在 `hugo.toml` 中：
