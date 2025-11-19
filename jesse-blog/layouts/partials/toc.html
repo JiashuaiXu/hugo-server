@@ -1,0 +1,139 @@
+{{- $headers := findRE "<h[1-6].*?>(.|\\n])+?</h[1-6]>" .Content -}}
+{{- $has_headers := ge (len $headers) 1 -}}
+{{- if $has_headers -}}
+<aside id="toc-container" class="toc-container wide">
+  <div class="toc">
+    <details {{if (.Param "TocOpen") }} open{{ end }}>
+      <summary accesskey="c" title="(Alt + C)">
+        <span class="details">{{- i18n "toc" | default "Table of Contents" }}</span>
+      </summary>
+      <div class="inner">
+        {{- $largest := 6 -}}
+        {{- range $headers -}}
+          {{- $headerLevel := index (findRE "[1-6]" . 1) 0 -}}
+          {{- $headerLevel := len (seq $headerLevel) -}}
+          {{- if lt $headerLevel $largest -}}
+            {{- $largest = $headerLevel -}}
+          {{- end -}}
+        {{- end -}}
+
+        {{- $firstHeaderLevel := len (seq $largest) -}}
+        {{- $.Scratch.Set "bareul" slice -}}
+        <ul>
+          {{- range seq (sub $firstHeaderLevel 1) -}}
+            <ul>
+          {{- end -}}
+          {{- range $i, $header := $headers -}}
+            {{- $headerLevel := index (findRE "[1-6]" . 1) 0 -}}
+            {{- $headerLevel := len (seq $headerLevel) -}}
+            {{- $anchorId := (replaceRE ".* id=\"([^\"]+)\".*" "$1" .) -}}
+            {{- $anchorId := lower (replaceRE "[^a-zA-Z0-9一-龥]+" "" $anchorId) -}}
+
+            {{- if gt $headerLevel $firstHeaderLevel -}}
+              {{- range seq $firstHeaderLevel (sub $headerLevel 1) -}}
+                <ul>
+              {{- end -}}
+            {{- end -}}
+            {{- if lt $headerLevel $firstHeaderLevel -}}
+              {{- range seq $headerLevel (sub $firstHeaderLevel 1) -}}
+                </ul>
+                {{- if in ($.Scratch.Get "bareul") . -}}
+                {{- else -}}
+                  </li>
+                {{- end -}}
+              {{- end -}}
+              {{- $.Scratch.Set "bareul" ($.Scratch.Get "bareul" | append $headerLevel) -}}
+            {{- end -}}
+            {{- if not (in ($.Scratch.Get "bareul") $headerLevel) -}}
+              </li>
+            {{- end -}}
+            {{- $.Scratch.Set "bareul" (after (len ($.Scratch.Get "bareul")) ($.Scratch.Get "bareul")) -}}
+
+            <li>
+              <a href="#{{ $anchorId }}" aria-label="{{ . | plainify | htmlUnescape }}">
+                {{- . | plainify | htmlUnescape -}}
+              </a>
+              {{- $firstHeaderLevel = $headerLevel -}}
+          {{- end -}}
+          {{ $firstHeaderLevel := len (seq $largest) }}
+          {{- range seq (sub $firstHeaderLevel 1) -}}
+            </ul>
+          {{- end -}}
+        </ul>
+      </div>
+    </details>
+  </div>
+</aside>
+<script>
+  let activeElement;
+  let elements;
+  window.addEventListener('DOMContentLoaded', function (event) {
+    checkTocPosition();
+    elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+    // Make the first header active
+    activeElement = elements[0];
+    const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+    document.querySelector(`.inner ul li a[href="#${id}"]`)?.classList.add('active');
+  }, false);
+
+  window.addEventListener('resize', function(event) {
+    checkTocPosition();
+  }, false);
+
+  window.addEventListener('scroll', () => {
+    activeElement = Array.from(elements).find((element) => {
+      if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+          (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+        return element;
+      }
+    }) || activeElement
+
+    elements.forEach((element) => {
+      const id = encodeURI(element.getAttribute('id')).toLowerCase();
+      const tocLink = document.querySelector(`.inner ul li a[href="#${id}"]`);
+      if (tocLink) {
+        if (element === activeElement) {
+          tocLink.classList.add('active');
+          // Scroll the TOC to keep the active link visible
+          const tocContainer = document.querySelector('.toc .inner');
+          if (tocContainer) {
+            const linkOffsetTop = tocLink.offsetTop;
+            const containerHeight = tocContainer.clientHeight;
+            const linkHeight = tocLink.clientHeight;
+            // Calculate the scroll position to center the active link
+            const scrollPosition = linkOffsetTop - (containerHeight / 2) + (linkHeight / 2);
+            tocContainer.scrollTo({
+              top: scrollPosition,
+              behavior: 'smooth'
+            });
+          }
+        } else {
+          tocLink.classList.remove('active');
+        }
+      }
+    });
+  }, false);
+
+  const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+  const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+  const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+  function checkTocPosition() {
+    const width = document.body.scrollWidth;
+    if (width - main - (toc * 2) - (gap * 4) > 0) {
+      document.getElementById("toc-container").classList.add("wide");
+    } else {
+      document.getElementById("toc-container").classList.remove("wide");
+    }
+  }
+
+  function getOffsetTop(element) {
+    if (!element.getClientRects().length) {
+      return 0;
+    }
+    let rect = element.getBoundingClientRect();
+    let win = element.ownerDocument.defaultView;
+    return rect.top + win.pageYOffset;
+  }
+</script>
+{{- end }}
