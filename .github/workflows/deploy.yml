@@ -7,10 +7,10 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'jesse-blog/hugo.toml'
-      - 'jesse-blog/themes/**'
-      - '.github/workflows/deploy.yml'
+    # paths:
+    #   - 'jesse-blog/hugo.toml'
+    #   - 'jesse-blog/themes/**'
+    #   - '.github/workflows/deploy.yml'
 
 jobs:
   deploy:
