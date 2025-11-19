@@ -1,14 +1,9 @@
 name: Build and Deploy Hugo Site
 
 on:
-  # 监听来自 obsidian-notes 的触发
   repository_dispatch:
     types: [content-updated]
-  
-  # 手动触发
   workflow_dispatch:
-  
-  # 监听主题和配置文件的变更
   push:
     branches:
       - main
@@ -22,18 +17,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout hugo-server repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
           token: ${{ secrets.GH_PAT }}
           fetch-depth: 0
       
-      - name: Update content submodule to latest
+      - name: Update content submodule
         run: |
-          cd jesse-blog/content
-          git pull origin main
-          cd ../..
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git submodule update --init --recursive --remote jesse-blog/content
           
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
@@ -56,7 +51,3 @@ jobs:
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: 'Deploy: ${{ github.event.head_commit.message || github.event_name }}'
-
-# Workflow test: 2025-11-19
-
-# Test after submodule fix: 2025-11-19-12:18
