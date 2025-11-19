@@ -231,3 +231,94 @@ git add jesse-blog/hugo.toml
 git commit -m "Config: Enable giscus comment system"
 git push
 ```
+
+## 第五步：实现评论模板
+
+创建 `jesse-blog/themes/hugo-PaperMod/layouts/partials/comments.html` 文件：
+
+```html
+{{- /* Comments area start */ -}}
+{{- if .Site.Params.comments.enabled -}}
+<div id="comments-section" style="margin-top: 2rem;">
+  {{- if eq .Site.Params.comments.provider "giscus" -}}
+  <script src="https://giscus.app/client.js"
+          data-repo="{{ .Site.Params.comments.giscus.repo }}"
+          data-repo-id="{{ .Site.Params.comments.giscus.repoId }}"
+          data-category="{{ .Site.Params.comments.giscus.category }}"
+          data-category-id="{{ .Site.Params.comments.giscus.categoryId }}"
+          data-mapping="{{ .Site.Params.comments.giscus.mapping | default "pathname" }}"
+          data-strict="{{ .Site.Params.comments.giscus.strict | default "0" }}"
+          data-reactions-enabled="{{ .Site.Params.comments.giscus.reactionsEnabled | default "1" }}"
+          data-emit-metadata="{{ .Site.Params.comments.giscus.emitMetadata | default "0" }}"
+          data-input-position="{{ .Site.Params.comments.giscus.inputPosition | default "bottom" }}"
+          data-theme="{{ .Site.Params.comments.giscus.theme | default "preferred_color_scheme" }}"
+          data-lang="{{ .Site.Params.comments.giscus.lang | default "zh-CN" }}"
+          data-loading="{{ .Site.Params.comments.giscus.loading | default "lazy" }}"
+          crossorigin="anonymous"
+          async>
+  </script>
+  {{- end -}}>
+</div>
+{{- end -}}
+{{- /* Comments area end */ -}}
+```
+
+## 第六步：修改主题模板支持全局评论
+
+修改 `jesse-blog/themes/hugo-PaperMod/layouts/_default/single.html`，将评论判断逻辑从：
+
+```go
+{{- if (.Param "comments") }}
+{{- partial "comments.html" . }}
+{{- end }}
+```
+
+改为：
+
+```go
+{{- if (or (.Param "comments") .Site.Params.comments.enabled) }}
+{{- partial "comments.html" . }}
+{{- end }}
+```
+
+这样可以：
+- 如果全局启用评论（`params.comments.enabled = true`），所有文章默认显示评论
+- 单篇文章可以通过 front matter 中的 `comments: false` 禁用评论
+- 或者通过 `comments: true` 单独启用评论
+
+## 验证配置
+
+1. 构建站点：
+```bash
+cd jesse-blog
+hugo
+```
+
+2. 检查生成的 HTML 是否包含 giscus 脚本：
+```bash
+grep -r "giscus.app/client.js" public/posts/ | head -3
+```
+
+3. 启动开发服务器测试：
+```bash
+hugo server -D
+```
+
+访问任意文章页面，应该能在文章底部看到 giscus 评论区。
+
+## 配置说明
+
+- **data-theme**: 使用 `preferred_color_scheme` 可以自动适配用户的系统主题（暗色/亮色）
+- **data-mapping**: 使用 `pathname` 意味着每个 URL 路径对应一个独立的讨论话题
+- **data-lang**: 设置为 `zh-CN` 显示中文界面
+
+## 故障排除
+
+如果评论不显示：
+1. 确认 GitHub Discussions 已启用
+2. 确认 Giscus App 已安装到仓库
+3. 确认 `repoId` 和 `categoryId` 正确填写
+4. 确认仓库是公开的
+5. 检查浏览器控制台是否有错误信息
+6. 确认 `comments.html` 模板文件已创建且内容正确
+7. 确认 `single.html` 已修改以支持全局评论配置
