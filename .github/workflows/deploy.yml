@@ -58,3 +58,5 @@ jobs:
           commit_message: 'Deploy: ${{ github.event.head_commit.message || github.event_name }}'
 
 # Workflow test: 2025-11-19
+
+# Test after submodule fix: 2025-11-19-12:18
