@@ -22,3 +22,23 @@
   color: var(--secondary);
   font-size: 14px;
 }
+
+/* 网站统计样式 - 与版权信息样式统一 */
+.site-stats {
+  text-align: center;
+  font-size: 14px;
+  color: var(--secondary);
+  padding: 10px 0;
+  opacity: 0.8;
+}
+
+.site-stats .footer-separator {
+  margin: 0 4px;
+}
+
+/* 文章阅读数样式 */
+.post-views {
+  display: inline;
+  font-size: inherit;
+  color: inherit;
+}
