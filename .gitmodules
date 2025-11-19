@@ -6,7 +6,7 @@
 	url = https://github.com/CaiJimmy/hugo-theme-stack.git
 [submodule "jesse-blog/themes/hugo-PaperMod"]
 	path = jesse-blog/themes/hugo-PaperMod
-	url = git@github.com:JiashuaiXu/hugo-PaperMod.git
+	url = https://github.com/JiashuaiXu/hugo-PaperMod.git
 [submodule "jesse-blog/content"]
 	path = jesse-blog/content
 	url = https://github.com/JiashuaiXu/obsidian-notes.git
