@@ -130,9 +130,8 @@
     const tocContainer = document.getElementById("toc-container");
     if (!tocContainer) return;
     
-    // 降低触发阈值：只需要 main + toc + gap*2 的宽度即可
-    // 约等于 650 + 300 + 40 = 990px，但为了更好的显示效果，设为1200px
-    if (width >= 1200) {
+    // 降低触发阈值到1000px，更容易触发侧边TOC
+    if (width >= 1000) {
       tocContainer.classList.add("wide");
     } else {
       tocContainer.classList.remove("wide");

@@ -45,9 +45,16 @@
   margin: 0;
 }
 
+/* 增强选中目录的颜色显示 */
 .active {
   font-size: 110%;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--primary) !important;
+  border-left: 3px solid var(--primary);
+  padding-left: 12px !important;
+  margin-left: -15px;
+  background: var(--theme);
+  border-radius: 4px;
 }
 
 .toc ul {
@@ -76,11 +83,14 @@
   color: var(--content);
   text-decoration: none;
   display: block;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .toc a:hover {
   color: var(--primary);
+  background: var(--theme);
 }
 
 /* Scrollbar styling for TOC */
@@ -102,8 +112,8 @@
   background: var(--primary);
 }
 
-/* Responsive behavior - 降低阈值到1200px */
-@media screen and (max-width: 1200px) {
+/* Responsive behavior - 进一步降低阈值到1000px */
+@media screen and (max-width: 1000px) {
   .toc-container.wide {
     position: relative;
     left: 0;
