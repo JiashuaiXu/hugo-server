@@ -92,3 +92,16 @@ theme = "hugo-PaperMod"
   [outputFormats.RSS]
     mediatype = "application/rss"
     baseName = "feed"
+
+# 社交媒体图标配置
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/JiashuaiXu"
+
+[[params.socialIcons]]
+  name = "x"
+  url = "https://x.com/xujiashuai"
+
+[[params.socialIcons]]
+  name = "telegram"
+  url = "https://t.me/jiashuaixu"
