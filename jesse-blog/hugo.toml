@@ -26,6 +26,9 @@ theme = "hugo-PaperMod"
 
   # 日期格式设置为 YYYY-MM-DD
   DateFormat = "2006-01-02"
+  
+  # 启用字数统计
+  ShowWordCount = true
 
   # 启用目录侧边栏
   ShowToc = true

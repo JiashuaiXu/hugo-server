@@ -13,14 +13,12 @@
   margin: 0 10px;
 }
 
-/* 确保文章元信息在 footer 中的样式 */
-.post-footer .post-meta {
-  padding: 15px 0;
-  margin-bottom: 15px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  color: var(--secondary);
+/* 文章头部元信息样式 */
+.post-header .post-meta {
+  margin-top: 10px;
   font-size: 14px;
+  color: var(--secondary);
+  opacity: 0.9;
 }
 
 /* 网站统计样式 - 与版权信息样式统一 */
