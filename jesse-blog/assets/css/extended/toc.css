@@ -102,8 +102,8 @@
   background: var(--primary);
 }
 
-/* Responsive behavior */
-@media screen and (max-width: 1440px) {
+/* Responsive behavior - 降低阈值到1200px */
+@media screen and (max-width: 1200px) {
   .toc-container.wide {
     position: relative;
     left: 0;

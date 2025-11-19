@@ -71,9 +71,14 @@
     checkTocPosition();
     elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
     // Make the first header active
-    activeElement = elements[0];
-    const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
-    document.querySelector(`.inner ul li a[href="#${id}"]`)?.classList.add('active');
+    if (elements.length > 0) {
+      activeElement = elements[0];
+      const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+      const tocLink = document.querySelector(`.inner ul li a[href="#${id}"]`);
+      if (tocLink) {
+        tocLink.classList.add('active');
+      }
+    }
   }, false);
 
   window.addEventListener('resize', function(event) {
@@ -81,6 +86,8 @@
   }, false);
 
   window.addEventListener('scroll', () => {
+    if (!elements || elements.length === 0) return;
+    
     activeElement = Array.from(elements).find((element) => {
       if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
           (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
@@ -120,10 +127,15 @@
 
   function checkTocPosition() {
     const width = document.body.scrollWidth;
-    if (width - main - (toc * 2) - (gap * 4) > 0) {
-      document.getElementById("toc-container").classList.add("wide");
+    const tocContainer = document.getElementById("toc-container");
+    if (!tocContainer) return;
+    
+    // 降低触发阈值：只需要 main + toc + gap*2 的宽度即可
+    // 约等于 650 + 300 + 40 = 990px，但为了更好的显示效果，设为1200px
+    if (width >= 1200) {
+      tocContainer.classList.add("wide");
     } else {
-      document.getElementById("toc-container").classList.remove("wide");
+      tocContainer.classList.remove("wide");
     }
   }
 
