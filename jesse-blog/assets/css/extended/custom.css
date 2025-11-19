@@ -1,0 +1,112 @@
+/* 侧边栏目录样式 */
+.toc {
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--entry);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-left: 20px;
+}
+
+.post-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 1200px) {
+  .post-content {
+    grid-template-columns: minmax(0, 3fr) minmax(250px, 1fr);
+  }
+  
+  .toc {
+    order: 2;
+  }
+  
+  .post-single .post-content > *:not(.toc) {
+    order: 1;
+  }
+}
+
+@media (max-width: 1199px) {
+  .toc {
+    position: relative;
+    top: 0;
+    margin-left: 0;
+    margin-bottom: 20px;
+  }
+}
+
+/* 文章统计样式 */
+.post-stats {
+  text-align: center;
+  padding: 15px 0;
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+.post-stats span {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+/* 优化TOC样式 */
+.toc details {
+  border: none;
+}
+
+.toc details summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.toc ul {
+  padding-left: 0;
+}
+
+.toc li {
+  list-style: none;
+  margin: 8px 0;
+  padding-left: 15px;
+  border-left: 2px solid var(--border);
+}
+
+.toc li:hover {
+  border-left-color: var(--primary);
+}
+
+.toc a {
+  color: var(--content);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.toc a:hover {
+  color: var(--primary);
+}
+
+/* 滚动条样式 */
+.toc::-webkit-scrollbar {
+  width: 6px;
+}
+
+.toc::-webkit-scrollbar-track {
+  background: var(--code-bg);
+  border-radius: 3px;
+}
+
+.toc::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.toc::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

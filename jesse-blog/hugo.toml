@@ -24,6 +24,11 @@ theme = "hugo-PaperMod"
   # Disable google analytics to fix build error
   # googleAnalytics = "UA-12345678-9"  # Comment out or remove this line
 
+  # 启用目录侧边栏
+  ShowToc = true
+  TocOpen = true
+  TocSide = 'right'  # 目录显示在右侧
+
   # 评论系统配置 (giscus)
   [params.comments]
     enabled = true
@@ -31,9 +36,9 @@ theme = "hugo-PaperMod"
     
     [params.comments.giscus]
       repo = "JiashuaiXu/hugo-server"
-      repoId = ""  # 需要填写，访问 https://giscus.app 获取
+      repoId = "R_kgDOKqBmgw"  # 需要填写,访问 https://giscus.app 获取
       category = "Announcements"
-      categoryId = ""  # 需要填写，访问 https://giscus.app 获取
+      categoryId = "DIC_kwDOKqBmg84Cx8uf"  # 需要填写,访问 https://giscus.app 获取
       mapping = "pathname"
       strict = "0"
       reactionsEnabled = "1"
@@ -48,6 +53,10 @@ theme = "hugo-PaperMod"
     style = "dracula"
     # lineNos = true  # Enable this if you want line numbers
     tabWidth = 4
+  [markup.tableOfContents]
+    endLevel = 3
+    ordered = false
+    startLevel = 2
 
 [[menu.main]]
   identifier = "home"
@@ -62,13 +71,19 @@ theme = "hugo-PaperMod"
   weight = 20
 
 [[menu.main]]
+  identifier = "search"
+  name = "Search"
+  url = "/search/"
+  weight = 25
+
+[[menu.main]]
   identifier = "about"
   name = "About"
   url = "/about/"
   weight = 30
 
 [outputs]
-  home = ["HTML", "RSS"]
+  home = ["HTML", "RSS", "JSON"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
   term = ["HTML", "RSS"]
