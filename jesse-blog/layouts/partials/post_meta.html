@@ -1,20 +1,37 @@
 {{- $scratch := newScratch }}
+{{- $isSingle := .IsPage }}
 
 {{- if not .Date.IsZero -}}
+{{- if $isSingle -}}
 {{- $scratch.Add "meta" (slice (printf "<span title='%s'>📅 %s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
+{{- else -}}
+{{- $scratch.Add "meta" (slice (printf "<span title='%s'>%s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
+{{- end -}}
 {{- end }}
 
 {{- if (.Param "ShowReadingTime") -}}
+{{- if $isSingle -}}
 {{- $scratch.Add "meta" (slice (printf "<span>⏱️ %d min read</span>" .ReadingTime)) }}
+{{- else -}}
+{{- $scratch.Add "meta" (slice (printf "<span>%d min read</span>" .ReadingTime)) }}
+{{- end -}}
 {{- end }}
 
 {{- if (.Param "ShowWordCount") -}}
+{{- if $isSingle -}}
 {{- $scratch.Add "meta" (slice (printf "<span>📝 %d words</span>" .WordCount)) }}
+{{- else -}}
+{{- $scratch.Add "meta" (slice (printf "<span>%d words</span>" .WordCount)) }}
+{{- end -}}
 {{- end }}
 
 {{- if not (.Param "hideAuthor") -}}
 {{- with (partial "author.html" .) }}
+{{- if $isSingle -}}
 {{- $scratch.Add "meta" (slice (printf "<span>✍️ %s</span>" .)) }}
+{{- else -}}
+{{- $scratch.Add "meta" (slice (printf "<span>%s</span>" .)) }}
+{{- end -}}
 {{- end }}
 {{- end }}
 
@@ -22,7 +39,13 @@
 {{- delimit . "&nbsp;·&nbsp;" | safeHTML -}}
 {{- end -}}
 
-<!-- 单篇文章阅读数 -->
+<!-- 单篇文章阅读数 - 仅在详情页显示 -->
+{{- if $isSingle -}}
 <span id="busuanzi_container_page_pv" class="post-views">
   &nbsp;·&nbsp;👁️ <span id="busuanzi_value_page_pv"></span> views
 </span>
+{{- else -}}
+<span id="busuanzi_container_page_pv" class="post-views">
+  &nbsp;·&nbsp;<span id="busuanzi_value_page_pv"></span> views
+</span>
+{{- end -}}

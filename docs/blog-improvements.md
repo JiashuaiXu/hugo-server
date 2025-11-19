@@ -348,3 +348,53 @@ hugo-server/
 
 **最后更新**: 2025-11-19
 **维护者**: Jesse
+
+---
+
+## 6. 列表页Emoji优化
+
+### 问题描述
+在首页和归档页等列表页面，每篇文章都显示emoji图标会使页面显得凌乱，影响阅读体验。
+
+### 解决方案
+
+**文件**: `layouts/partials/post_meta.html`
+
+使用 Hugo 的上下文检测，根据页面类型自动决定是否显示emoji：
+
+```go
+{{- $isSingle := .IsPage }}
+
+{{- if not .Date.IsZero -}}
+{{- if $isSingle -}}
+  {{- /* 详情页：显示emoji */ -}}
+  {{- $scratch.Add "meta" (slice (printf "<span>📅 %s</span>" (.Date | time.Format))) }}
+{{- else -}}
+  {{- /* 列表页：不显示emoji */ -}}
+  {{- $scratch.Add "meta" (slice (printf "<span>%s</span>" (.Date | time.Format))) }}
+{{- end -}}
+{{- end }}
+```
+
+### 效果对比
+
+**文章详情页**（点开文章后）：
+```
+📅 2025-11-18 · ⏱️ 4 min read · 📝 1200 words · ✍️ Jesse · 👁️ 116 views
+```
+
+**列表页/首页**（文章缩略）：
+```
+2025-11-18 · 4 min read · 1200 words · Jesse · 116 views
+```
+
+### 优势
+1. ✅ **列表页简洁清爽**：去除emoji，信息更紧凑
+2. ✅ **详情页突出重点**：emoji增加视觉吸引力
+3. ✅ **自动适配**：无需额外配置，根据页面类型自动切换
+4. ✅ **统一管理**：一个模板文件处理两种情况
+
+---
+
+**最后更新**: 2025-11-19  
+**版本**: v2.0
