@@ -24,6 +24,9 @@ theme = "hugo-PaperMod"
   # Disable google analytics to fix build error
   # googleAnalytics = "UA-12345678-9"  # Comment out or remove this line
 
+  # 日期格式设置为 YYYY-MM-DD
+  DateFormat = "2006-01-02"
+
   # 启用目录侧边栏
   ShowToc = true
   TocOpen = true
@@ -100,7 +103,7 @@ theme = "hugo-PaperMod"
 
 [[params.socialIcons]]
   name = "x"
-  url = "https://x.com/xujiashuai"
+  url = "https://x.com/xujiashuaixu"
 
 [[params.socialIcons]]
   name = "telegram"
