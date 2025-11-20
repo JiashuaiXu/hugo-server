@@ -2,38 +2,48 @@
 {{- $isSingle := .IsPage }}
 
 {{- if not .Date.IsZero -}}
-{{- if $isSingle -}}
-{{- $scratch.Add "meta" (slice (printf "<span title='%s'>📅 %s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
-{{- else -}}
-{{- $scratch.Add "meta" (slice (printf "<span title='%s'>%s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
-{{- end -}}
+  {{- if $isSingle -}}
+    {{- $scratch.Add "meta" (slice (printf "<span title='%s'>📅 %s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
+  {{- else -}}
+    {{- $scratch.Add "meta" (slice (printf "<span title='%s'>%s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
+  {{- end -}}
 {{- end }}
 
 {{- if (.Param "ShowReadingTime") -}}
-{{- if $isSingle -}}
-{{- $scratch.Add "meta" (slice (printf "<span>⏱️ %d min read</span>" .ReadingTime)) }}
-{{- else -}}
-{{- $scratch.Add "meta" (slice (printf "<span>%d min read</span>" .ReadingTime)) }}
-{{- end -}}
+  {{- if $isSingle -}}
+    {{- $scratch.Add "meta" (slice (printf "<span>⏱️ %d min read</span>" .ReadingTime)) }}
+  {{- else -}}
+    {{- $scratch.Add "meta" (slice (printf "<span>%d min read</span>" .ReadingTime)) }}
+  {{- end -}}
 {{- end }}
 
 {{- if (.Param "ShowWordCount") -}}
-{{- if $isSingle -}}
-{{- $scratch.Add "meta" (slice (printf "<span>📝 %d words</span>" .WordCount)) }}
-{{- else -}}
-{{- $scratch.Add "meta" (slice (printf "<span>%d words</span>" .WordCount)) }}
-{{- end -}}
+  {{- if $isSingle -}}
+    {{- $scratch.Add "meta" (slice (printf "<span>📝 %d words</span>" .WordCount)) }}
+  {{- else -}}
+    {{- $scratch.Add "meta" (slice (printf "<span>%d words</span>" .WordCount)) }}
+  {{- end -}}
 {{- end }}
 
 {{- if not (.Param "hideAuthor") -}}
-{{- with (partial "author.html" .) }}
-{{- if $isSingle -}}
-{{- $scratch.Add "meta" (slice (printf "<span>✍️ %s</span>" .)) }}
-{{- else -}}
-{{- $scratch.Add "meta" (slice (printf "<span>%s</span>" .)) }}
+  {{- with (partial "author.html" .) }}
+    {{- if $isSingle -}}
+      {{- $scratch.Add "meta" (slice (printf "<span>✍️ %s</span>" .)) }}
+    {{- else -}}
+      {{- $scratch.Add "meta" (slice (printf "<span>%s</span>" .)) }}
+    {{- end -}}
+  {{- end }}
+{{- end }}
+
+{{- /* 在列表页显示标签 */ -}}
+{{- if not $isSingle -}}
+  {{- with .Params.tags -}}
+    {{- /* 获取前3个标签，避免显示太多 */ -}}
+    {{- $tags := first 3 . -}}
+    {{- $tagStr := delimit $tags ", " -}}
+    {{- $scratch.Add "meta" (slice (printf "<span>🏷️ %s</span>" $tagStr)) }}
+  {{- end -}}
 {{- end -}}
-{{- end }}
-{{- end }}
 
 {{- with ($scratch.Get "meta") }}
 {{- delimit . "&nbsp;·&nbsp;" | safeHTML -}}
