@@ -9,4 +9,4 @@
 	url = https://github.com/JiashuaiXu/hugo-PaperMod.git
 [submodule "jesse-blog/content"]
 	path = jesse-blog/content
-	url = https://github.com/JiashuaiXu/obsidian-notes.git
+	url = git@github.com:JiashuaiXu/obsidian-notes.git
