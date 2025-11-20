@@ -1,4 +1,3 @@
-#!/usr/bin/bash
 #!/run/current-system/sw/bin/bash
 # Hugo 本地预览脚本
 
