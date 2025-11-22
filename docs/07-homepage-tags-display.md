@@ -2,7 +2,7 @@
 
 ## 功能说明
 
-在首页（文章列表）上优先显示文章标签，而不是详细的带emoji元信息，以提升首页浏览体验。
+在首页（文章列表）上优先显示文章标签，而不是详细的带emoji元信息，以提升首页浏览体验。标签使用美观的矩形样式呈现。
 
 ## 问题背景
 
@@ -14,9 +14,10 @@
 ## 实现效果
 
 ### 首页（列表页面）
-- 优先显示文章标签 (`🏷️ 标签1, 标签2, 标签3`)
+- 优先显示文章标签，以美观的矩形样式呈现 (`🏷️ 标签1, 标签2, 标签3`)
 - 简化元信息（仅显示日期）
 - 不显示阅读时间和字数的emoji
+- 标签具有梯度背景、圆角矩形和悬停效果
 
 ### 单页（详情页面）
 - 保持原有的丰富元信息显示
@@ -127,9 +128,48 @@
 - **信息层次清晰**: 首页简洁，详情页丰富
 - **用户体验优化**: 针对不同页面场景优化信息展示
 - **向后兼容**: 不影响现有单页显示效果
+- **美观的标签样式**: 矩形标签带渐变背景和悬停效果
+
+## 样式配置
+
+### 3. 添加标签样式
+
+更新 `jesse-blog/layouts/partials/extend_head.html` 以添加标签样式：
+
+```html
+<!-- 首页标签样式 -->
+<style>
+  /* 首页标签样式 */
+  .post-tags {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.85em;
+    margin-right: 5px;
+    border: none;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .post-tags:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    text-decoration: none;
+  }
+  
+  /* 为深色主题提供样式 */
+  html[data-theme="dark"] .post-tags {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  }
+</style>
+```
 
 ## 注意事项
 
 - 需要给文章添加 `tags` front matter 才能显示标签
 - 标签最多显示前3个，避免标签过多影响布局
 - 使用 `reflect.IsMap` 检测参数类型以支持两种调用方式
+- 样式包括圆角矩形、渐变背景、悬停效果等视觉增强
