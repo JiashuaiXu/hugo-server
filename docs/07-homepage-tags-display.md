@@ -139,8 +139,8 @@
 ```html
 <!-- 首页标签样式 -->
 <style>
-  /* 首页标签样式 */
-  .post-tags {
+  /* 首页标签样式 - 仅在列表页面应用 */
+  .post-entry .post-tags {
     display: inline-block;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -154,14 +154,14 @@
     transition: all 0.2s ease;
   }
   
-  .post-tags:hover {
+  .post-entry .post-tags:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     text-decoration: none;
   }
   
   /* 为深色主题提供样式 */
-  html[data-theme="dark"] .post-tags {
+  html[data-theme="dark"] .post-entry .post-tags {
     background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
   }
 </style>
