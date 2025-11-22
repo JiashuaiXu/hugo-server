@@ -23,6 +23,9 @@ theme = "hugo-PaperMod"
   enableRSS = true
   # Disable google analytics to fix build error
   # googleAnalytics = "UA-12345678-9"  # Comment out or remove this line
+  
+  # Main sections to display on homepage
+  mainSections = ["posts", "copilot"]
 
   # 日期格式设置为 YYYY-MM-DD
   DateFormat = "2006-01-02"

@@ -27,4 +27,4 @@ echo "💡 NixOS: 使用 'nix develop' 进入开发环境"
 echo ""
 
 cd jesse-blog
-hugo server -D --bind "$BIND" --baseURL "$BASE_URL"
+hugo server -D --buildFuture --bind "$BIND" --baseURL "$BASE_URL"

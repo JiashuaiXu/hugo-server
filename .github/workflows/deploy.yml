@@ -39,7 +39,7 @@ jobs:
       - name: Build Hugo site
         run: |
           cd jesse-blog
-          hugo --minify
+          hugo --minify --buildFuture
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
