@@ -27,6 +27,17 @@
 - 使用流程说明
 - 常见问题解答
 
+### [功能文档索引](#功能文档索引) 📚
+**功能文档** - 各个功能的详细实现说明
+
+**内容包括**：
+- [搜索功能实现](./01-search-feature.md)
+- [阅读进度条实现](./02-reading-progress-bar.md) 
+- [侧边目录实现](./03-sidebar-toc.md)
+- [访客统计实现](./04-visitor-statistics.md)
+- [自动化部署流程](./05-automated-deployment-workflow.md)
+- [条件显示进度条](./06-conditional-progress-bar-display.md)
+
 ### [obsidian-notes/README.md](../jesse-blog/content/README.md) 📝
 **内容仓库文档** - Obsidian 集成和写作指南
 
@@ -43,6 +54,14 @@
 1. [README.md - 快速开始](./README.md#-快速开始)
 2. [SETUP_GUIDE.md - 配置步骤](./SETUP_GUIDE.md#配置步骤)
 3. [README.md - 日常使用](./README.md#-日常使用)
+
+### 功能文档
+1. [01 - 搜索功能](./01-search-feature.md) 
+2. [02 - 阅读进度条](./02-reading-progress-bar.md)
+3. [03 - 侧边目录](./03-sidebar-toc.md)
+4. [04 - 访客统计](./04-visitor-statistics.md)
+5. [05 - 自动化部署](./05-automated-deployment-workflow.md)
+6. [06 - 条件进度条](./06-conditional-progress-bar-display.md)
 
 ### 写作发布
 1. [obsidian-notes/README.md - 写作指南](./jesse-blog/content/README.md#-写作指南)
