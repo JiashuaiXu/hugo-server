@@ -1,48 +1,54 @@
 {{- $scratch := newScratch }}
-{{- $isSingle := .IsPage }}
 
-{{- if not .Date.IsZero -}}
-  {{- if $isSingle -}}
-    {{- $scratch.Add "meta" (slice (printf "<span title='%s'>📅 %s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
-  {{- else -}}
-    {{- $scratch.Add "meta" (slice (printf "<span title='%s'>%s</span>" (.Date) (.Date | time.Format (default "2006-01-02" site.Params.DateFormat)))) }}
-  {{- end -}}
-{{- end }}
+{{- /* Determine if this is being called from a list item */ -}}
+{{- $ctx := . -}}
+{{- $isListItem := false -}}
+{{- if reflect.IsMap . -}}
+  {{- $ctx = .page -}}
+  {{- $isListItem = .isListItem | default false -}}
+{{- end -}}
 
-{{- if (.Param "ShowReadingTime") -}}
-  {{- if $isSingle -}}
-    {{- $scratch.Add "meta" (slice (printf "<span>⏱️ %d min read</span>" .ReadingTime)) }}
-  {{- else -}}
-    {{- $scratch.Add "meta" (slice (printf "<span>%d min read</span>" .ReadingTime)) }}
-  {{- end -}}
-{{- end }}
-
-{{- if (.Param "ShowWordCount") -}}
-  {{- if $isSingle -}}
-    {{- $scratch.Add "meta" (slice (printf "<span>📝 %d words</span>" .WordCount)) }}
-  {{- else -}}
-    {{- $scratch.Add "meta" (slice (printf "<span>%d words</span>" .WordCount)) }}
-  {{- end -}}
-{{- end }}
-
-{{- if not (.Param "hideAuthor") -}}
-  {{- with (partial "author.html" .) }}
-    {{- if $isSingle -}}
-      {{- $scratch.Add "meta" (slice (printf "<span>✍️ %s</span>" .)) }}
-    {{- else -}}
-      {{- $scratch.Add "meta" (slice (printf "<span>%s</span>" .)) }}
-    {{- end -}}
-  {{- end }}
-{{- end }}
-
-{{- /* 在列表页显示标签 */ -}}
-{{- if not $isSingle -}}
-  {{- with .Params.tags -}}
+{{- /* 在列表页（主页）显示标签为主要内容，简洁元信息 */ -}}
+{{- if $isListItem -}}
+  {{- $metaItems := slice -}}
+  
+  {{- /* 优先显示标签 */ -}}
+  {{- with $ctx.Params.tags -}}
     {{- /* 获取前3个标签，避免显示太多 */ -}}
     {{- $tags := first 3 . -}}
     {{- $tagStr := delimit $tags ", " -}}
-    {{- $scratch.Add "meta" (slice (printf "<span>🏷️ %s</span>" $tagStr)) }}
+    {{- $metaItems = $metaItems | append (printf "<span class='post-tags'>🏷️ %s</span>" $tagStr) }}
   {{- end -}}
+  
+  {{- /* 只显示日期作为基本元信息 */ -}}
+  {{- if not $ctx.Date.IsZero -}}
+    {{- $metaItems = $metaItems | append (printf "<span class='post-date' title='%s'>%s</span>" ($ctx.Date) ($ctx.Date | time.Format (default "2006-01-02" site.Params.DateFormat))) }}
+  {{- end -}}
+
+  {{- $scratch.Set "meta" $metaItems -}}
+
+{{- /* 在单页显示详细元信息（含emoji） */ -}}
+{{- else -}}
+  {{- $metaItems := slice -}}
+  {{- if not $ctx.Date.IsZero -}}
+    {{- $metaItems = $metaItems | append (printf "<span title='%s'>📅 %s</span>" ($ctx.Date) ($ctx.Date | time.Format (default "2006-01-02" site.Params.DateFormat))) }}
+  {{- end }}
+
+  {{- if ($ctx.Param "ShowReadingTime") -}}
+    {{- $metaItems = $metaItems | append (printf "<span>⏱️ %d min read</span>" $ctx.ReadingTime) }}
+  {{- end }}
+
+  {{- if ($ctx.Param "ShowWordCount") -}}
+    {{- $metaItems = $metaItems | append (printf "<span>📝 %d words</span>" $ctx.WordCount) }}
+  {{- end }}
+
+  {{- if not ($ctx.Param "hideAuthor") -}}
+    {{- with (partial "author.html" $ctx) }}
+      {{- $metaItems = $metaItems | append (printf "<span>✍️ %s</span>" .) }}
+    {{- end }}
+  {{- end }}
+  
+  {{- $scratch.Set "meta" $metaItems -}}
 {{- end -}}
 
 {{- with ($scratch.Get "meta") }}
@@ -50,7 +56,7 @@
 {{- end -}}
 
 <!-- 单篇文章阅读数 - 仅在详情页显示 -->
-{{- if $isSingle -}}
+{{- if not $isListItem -}}
 <span id="busuanzi_container_page_pv" class="post-views">
   &nbsp;·&nbsp;👁️ <span id="busuanzi_value_page_pv"></span> views
 </span>
