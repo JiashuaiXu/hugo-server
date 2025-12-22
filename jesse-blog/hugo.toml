@@ -3,6 +3,13 @@ languageCode = "zh-cn"
 title = "Jesse's Blog"
 theme = "hugo-PaperMod"
 
+# 不参与构建的内容（例如：Obsidian 插件/提示词等纯笔记目录）
+# ignoreFiles 使用正则表达式匹配相对路径
+ignoreFiles = [
+  "content/copilot/.*",
+  "copilot/.*",
+]
+
 [params]
   description = "Jesse's personal blog"
   author = "Jesse"
@@ -25,7 +32,7 @@ theme = "hugo-PaperMod"
   # googleAnalytics = "UA-12345678-9"  # Comment out or remove this line
   
   # Main sections to display on homepage
-  mainSections = ["posts", "copilot"]
+  mainSections = ["posts"]
 
   # 日期格式设置为 YYYY-MM-DD
   DateFormat = "2006-01-02"
