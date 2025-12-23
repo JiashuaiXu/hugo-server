@@ -121,7 +121,37 @@ ignoreFiles = [
 
 ---
 
-## 6. 推荐的日常发布流程（最不容易踩坑）
+## 6. 问题 3：主页不显示 `posts/go/` 目录下的文章（被首页过滤）
+
+### 现象
+
+- `posts/go/hugo-tech-stack-and-architecture.md` 已构建成功
+- 但主页列表不出现该文章（或只在 `posts/go/` 相关页面可见）
+
+### 根因
+
+- 主页文章列表通常按 `mainSections=["posts"]` 过滤页面集合（即 `Type in mainSections`）
+- 当文章位于 `posts/<subdir>/...` 时，某些情况下页面的 **`Type` 会被识别为子目录名**（例如 `go`）
+- 于是被首页过滤掉（因为 `go` 不在 `mainSections`）
+
+### 修复动作（推荐、最稳妥）
+
+在内容仓库新增 `posts/_index.md`，对 `posts` section 使用 **cascade** 强制所有后代页面 `type="posts"`：
+
+```yaml
+---
+title: "Posts"
+draft: false
+cascade:
+  type: "posts"
+---
+```
+
+这样你以后在 `posts/` 下建立任意多级目录（如 `posts/go/`、`posts/ros2/`），都能稳定出现在主页/归档/RSS 等聚合页。
+
+---
+
+## 7. 推荐的日常发布流程（最不容易踩坑）
 
 1. 在 `obsidian-notes` 写作并提交推送
 2. 确认 GitHub Actions 已触发（`obsidian-notes` -> `hugo-server`）
@@ -130,7 +160,7 @@ ignoreFiles = [
 
 ---
 
-## 7. 快速自检清单（5 个点）
+## 8. 快速自检清单（5 个点）
 
 - `hugo-server`：`git submodule status` 没有 `-` 前缀
 - `obsidian-notes`：`git status` 没有未提交变更
