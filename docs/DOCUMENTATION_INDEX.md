@@ -39,6 +39,7 @@
 - [条件显示进度条](./06-conditional-progress-bar-display.md)
 - [首页标签显示](./07-homepage-tags-display.md)
 - [最近修复与改动总结（文章更新/构建失败/忽略目录）](./08-recent-fixes-and-updates.md)
+- [一键发布脚本（本地自动提交 + 推送 + 更新子模块引用）](./09-publish-script.md)
 
 ### [obsidian-notes/README.md](../jesse-blog/content/README.md) 📝
 **内容仓库文档** - Obsidian 集成和写作指南
@@ -66,6 +67,7 @@
 6. [06 - 条件进度条](./06-conditional-progress-bar-display.md)
 7. [07 - 首页标签](./07-homepage-tags-display.md)
 8. [08 - 最近修复与改动总结](./08-recent-fixes-and-updates.md)
+9. [09 - 一键发布脚本](./09-publish-script.md)
 
 ### 写作发布
 1. [obsidian-notes/README.md - 写作指南](./jesse-blog/content/README.md#-写作指南)
